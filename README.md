@@ -44,9 +44,13 @@ make epoll
 
 ## Демонстрация работы программ
 1) Простой параллельный сервер 
+![task1](https://github.com/user-attachments/assets/c4d7a9af-fac9-467d-a634-689db726e944)
 
 2) Параллельный сервер с пулом
+![task2](https://github.com/user-attachments/assets/7b61f72c-e47c-445a-bb5f-e473188dd3a8)
 
 3) Сервер с паттерном "Производитель-потребитель" 
+![task3](https://github.com/user-attachments/assets/fda06436-c670-4ff2-970b-468b93084fd0)
 
 4) Мультипротокольный сервер на мультеплексировании 
+![task4](https://github.com/user-attachments/assets/22ea191a-1730-46a6-86e7-72dce036c48e)
