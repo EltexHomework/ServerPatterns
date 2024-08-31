@@ -69,17 +69,18 @@ void run_server(struct server* server) {
 void run_select(struct server* server) {
   int max_fd;
   int result;
-  fd_set fds;
-
-  FD_ZERO(&fds);
-  FD_SET(server->tcp_fd, &fds);
-  FD_SET(server->udp_fd, &fds);
   
   max_fd = (server->tcp_fd > server->udp_fd) 
     ? server->tcp_fd 
     : server->udp_fd;
 
   while (1) {  
+    fd_set fds;
+
+    FD_ZERO(&fds);
+    FD_SET(server->tcp_fd, &fds);
+    FD_SET(server->udp_fd, &fds);
+
     /* Make monitor for fds */
     result = select(max_fd + 1, &fds, NULL, NULL, NULL);
     if (result == -1) {
@@ -105,19 +106,19 @@ void run_select(struct server* server) {
  * @server - pointer to an object of server struct 
  */
 void run_poll(struct server* server) {
-  struct pollfd fds[2];
-  int result;
-
-  /* Initialize tcp fd */
-  fds[0].fd = server->tcp_fd;
-  fds[0].events = POLLIN; 
-  
-  /* Initialize udp fd */
-  fds[1].fd = server->udp_fd;
-  fds[1].events = POLLIN; 
-  
-  /* Wait for events in fds */
+  /* Wait for events */
   while (1) {
+    struct pollfd fds[2];
+    int result;
+
+    /* Initialize tcp fd */
+    fds[0].fd = server->tcp_fd;
+    fds[0].events = POLLIN; 
+    
+    /* Initialize udp fd */
+    fds[1].fd = server->udp_fd;
+    fds[1].events = POLLIN; 
+
     /* Create poll */
     result = poll(fds, 2, 0);
     if (result == -1) {
