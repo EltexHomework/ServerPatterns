@@ -1,10 +1,18 @@
 #include "../headers/service.h"
-#include <pthread.h>
 
+/*
+ * create_service - used to create an object of service struct.
+ * @ip - ip address of service
+ * @port - port of service
+ * @msqid - id for msq for requests from listener server  
+ * @msq_mutex - mutex to controll access to msq 
+ * @id - id for msq messages (used to send messages)
+ *
+ * Return: pointer to an object of service struct 
+ */
 struct service* create_service(const char* ip, int port, 
                                int msqid, pthread_mutex_t msq_mutex, int id) {
   struct service* service = (struct service*) malloc(sizeof(struct service));
-  
   if (!service)
     print_error("malloc");
 
@@ -20,6 +28,12 @@ struct service* create_service(const char* ip, int port,
   return service;
 }
 
+/*
+ * run_service - used to create socket, bind it and
+ * translate it to passive mode. Calls handle_client_connection
+ * and waits for requests from listener server.
+ * @arg - pointer that casted to service struct inside
+ */
 void* run_service(void* arg) {
   struct service* service = (struct service*) arg;
 
@@ -45,6 +59,12 @@ void* run_service(void* arg) {
   return NULL;
 }
 
+/*
+ * handle_client_connection - used to wait for connections
+ * on socket. sends notification to listener server about
+ * occupation of service.
+ * @service - pointer to an object of service struct
+ */
 void handle_client_connection(struct service* service) {
   /* Accept connections */
   while (1) {
@@ -80,6 +100,12 @@ void handle_client_connection(struct service* service) {
   }
 }
 
+/*
+ * communicate - used to communicate with client that is connected.
+ * Receives message, edits it and sends back.
+ * @service - pointert to an object of service struct
+ * @client - pointer to an object of client struct
+ */
 void communicate(struct service* service, struct client* client) {
   while (1) {
     char* reply;
@@ -145,7 +171,9 @@ void send_message(struct client* client, char buffer[BUFFER_SIZE]) {
 
 /*
  * notify_server - used to send message to server
- * through message queue 
+ * through message queue.
+ * @service - pointer to an object of service struct
+ * @status - status of service (FREE or OCCUPIED) 
  */
 void notify_server(struct service* service, enum service_status status) {
   struct msg msg;

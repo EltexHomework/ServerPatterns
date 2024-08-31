@@ -3,7 +3,8 @@
 /*
  * create_server - used to create an object of server
  * struct, initializes its fields.
- * @path - path to socket file
+ * @ip - ip address of the server
+ * @port - port of the server
  *
  * Return: pointer to an object of server struct 
  */
@@ -133,7 +134,7 @@ void delete_client(struct server* server, struct client* client) {
 }
 
 /*
- * handle_client_connection - used int thread to
+ * handle_client_connection - used in thread to
  * handle new messages from connected user. If
  * client calls shutdown, connection will be closed,
  * memory freed.

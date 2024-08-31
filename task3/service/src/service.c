@@ -1,5 +1,13 @@
 #include "../headers/service.h"
 
+/*
+ * create_service - used to create an object of service struct.
+ * @msqid - id for msq for requests from listener server  
+ * @msq_mutex - mutex to controll access to msq 
+ * @id - id for msq messages (used to send messages)
+ *
+ * Return: pointer to an object of service struct 
+ */
 struct service* create_service(int msqid, pthread_mutex_t msq_mutex, int id) {
   struct service* service = (struct service*) malloc(sizeof(struct service));
   
@@ -14,6 +22,12 @@ struct service* create_service(int msqid, pthread_mutex_t msq_mutex, int id) {
   return service;
 }
 
+/*
+ * run_service - used to log service start.
+ * Calls handle_client_connection
+ * and waits for requests from listener server.
+ * @arg - pointer that casted to service struct inside
+ */
 void* run_service(void* arg) {
   struct service* service = (struct service*) arg;
 
@@ -27,6 +41,11 @@ void* run_service(void* arg) {
   return NULL;
 }
 
+/*
+ * handle_client_connection - used to wait for requests
+ * from listener server and processes them.
+ * @service - pointer to an object of service struct
+ */
 void handle_client_requests(struct service* service) {
   /* Accept connections */
   while (1) {
@@ -40,9 +59,10 @@ void handle_client_requests(struct service* service) {
            msg.payload.client.endpoint->port,
            msg.payload.message);
     
+    /* Add prefix to message */
     reply = edit_message(msg.payload.message);
     
-    
+    /* Send reply */
     send_message(&msg.payload.client, reply);
     
     /* Log reply */
@@ -79,8 +99,9 @@ void send_message(struct client* client, char buffer[BUFFER_SIZE]) {
 }
 
 /*
- * notify_server - used to send message to server
- * through message queue 
+ * recv_request - used to receive request from 
+ * listener server through message queue 
+ * @service - pointer to an object of service struct
  */
 struct msg recv_request(struct service* service) {
   struct msg msg;

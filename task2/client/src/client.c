@@ -56,7 +56,6 @@ void run_client(struct client* client) {
     return;
   }
 
-
   /* Close connection with listener server */
   close_connection(client);     
   free_endpoint(client->serv_endpoint);

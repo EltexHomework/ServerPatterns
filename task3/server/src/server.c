@@ -1,10 +1,12 @@
 #include "../headers/server.h"
-#include <sys/socket.h>
 
 /*
  * create_server - used to create an object of server
  * struct, initializes its fields.
- * @path - path to socket file
+ * @ip - ip address of the server 
+ * @port - port of the server
+ * @msq_path - path for file to open msq with
+ * @services_amount - amount of services to create
  *
  * Return: pointer to an object of server struct 
  */
@@ -56,7 +58,8 @@ struct server* create_server(const char* ip, const int port, const char* msq_pat
 
 /*
  * run_server - used to bind server, set it
- * to passive mode and accept connections
+ * to passive mode, accept connection and check for new
+ * messages.
  * @server - pointer to an object of server struct
  */
 void run_server(struct server* server) {
@@ -115,7 +118,11 @@ void run_server(struct server* server) {
   }
 }
 
-
+/*
+ * check_user_messages - used to check for new messages
+ * from connected users.
+ * @server - pointer to an object of server struct
+ */
 void check_user_messages(struct server* server) {
   for (int i = 0; i < server->clients_amount; i++) {
     struct client* client = server->clients[i];
@@ -133,7 +140,12 @@ void check_user_messages(struct server* server) {
   }
 }
 
-
+/*
+ * send_request - used to send request to services.
+ * @server - pointer to an object of server struct
+ * @client - pointer to an object of client struct
+ * @message - message that client sent
+ */
 void send_request(struct server* server, struct client* client, char* message) {
   struct msg msg;
   
@@ -203,8 +215,7 @@ char* recv_message(struct client* client) {
  * add_client - used to add client object to array
  * of clients.
  * @server - pointer to an object of server struct
- * @client_addr - pointer to an object of sockaddr_un struct  
- * client_fd - descriptor for communication with client
+ * @client - pointer to an object of client struct  
  */
 void add_client(struct server* server, struct client* client) {
   /* Check if server is full */
