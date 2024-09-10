@@ -106,19 +106,19 @@ void run_select(struct server* server) {
  * @server - pointer to an object of server struct 
  */
 void run_poll(struct server* server) {
+  struct pollfd fds[2];
+  int result;
+
+  /* Initialize tcp fd */
+  fds[0].fd = server->tcp_fd;
+  fds[0].events = POLLIN; 
+  
+  /* Initialize udp fd */
+  fds[1].fd = server->udp_fd;
+  fds[1].events = POLLIN; 
+
   /* Wait for events */
   while (1) {
-    struct pollfd fds[2];
-    int result;
-
-    /* Initialize tcp fd */
-    fds[0].fd = server->tcp_fd;
-    fds[0].events = POLLIN; 
-    
-    /* Initialize udp fd */
-    fds[1].fd = server->udp_fd;
-    fds[1].events = POLLIN; 
-
     /* Create poll */
     result = poll(fds, 2, 0);
     if (result == -1) {
@@ -387,6 +387,10 @@ char* recv_udp(struct server* server, struct sockaddr_in* client) {
   
   /* Receive message */
   bytes_read = recvfrom(server->udp_fd, buffer, BUFFER_SIZE, 0, (struct sockaddr*) client, &client_len);  
+
+  /* Truncate buffer*/
+  buffer[bytes_read] = '\0';
+
   if (bytes_read == -1)
     print_error("recvfrom");
   else if (bytes_read == 0)
