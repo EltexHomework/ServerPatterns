@@ -53,4 +53,5 @@ make epoll
 ![task3](https://github.com/user-attachments/assets/fda06436-c670-4ff2-970b-468b93084fd0)
 
 4) Мультипротокольный сервер на мультеплексировании 
-![task4](https://github.com/user-attachments/assets/22ea191a-1730-46a6-86e7-72dce036c48e)
+![pat_task4](https://github.com/user-attachments/assets/c6e19a97-7fa9-4d71-94b9-8898456b0ef9)
+
